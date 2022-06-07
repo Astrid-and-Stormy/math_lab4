@@ -30,7 +30,8 @@ def lineal_approximation(x, y, n):
     delta = SXX * n - SX * SX
     delta1 = SXY * n - SX * SY
     delta2 = SXX * SY - SX * SXY
-
+    if delta == 0:
+        return None
     return delta1 / delta, delta2 / delta
 
 
@@ -52,6 +53,8 @@ def square_approximation(x, y, n):
         [n, SX, SXX],
         [SX, SXX, SXXX],
         [SXX, SXXX, SXXXX]])
+    if delta0 == 0:
+        return None
     delta1 = np.linalg.det([
         [SY, SX, SXX],
         [SXY, SXX, SXXX],
@@ -112,6 +115,8 @@ def triple_approximation(x, y, n):
         [data[3][0], data[3][1], data[3][2], data[3][4]]
     ]
     delta0 = np.linalg.det(data0)
+    if delta0 == 0:
+        return None
     delta1 = np.linalg.det(data1)
     delta2 = np.linalg.det(data2)
     delta3 = np.linalg.det(data3)
@@ -193,9 +198,13 @@ def approximation(x, y, n):
     lgf = []
     ef = []
     pf = []
-    la, lb = (lineal_approximation(x, y, n))
-    sa, sb, sc = (square_approximation(x, y, n))
-    ta, tb, tc, td = (triple_approximation(x, y, n))
+    try:
+        la, lb = (lineal_approximation(x, y, n))
+        sa, sb, sc = (square_approximation(x, y, n))
+        ta, tb, tc, td = (triple_approximation(x, y, n))
+    except:
+        print("Че-то явно не то. Давай другие данные")
+        return None
     is_log = True
     lga, lgb = (logarithmic_approximation(x, y, n))
     if lga is None:
@@ -247,6 +256,7 @@ def approximation(x, y, n):
         plt.plot(x_nump, ea * math.e ** (eb * x_nump))
     if is_pow:
         plt.plot(x_nump, pa * x_nump ** pb)
+    print("Закройте график, чтобы продолжить")
     plt.show()
 
 
@@ -372,7 +382,6 @@ def main():
         if n == -1:
             print("До свидания. Ждем вас еще")
             break
-        print("Закройте график, чтобы продолжить")
         approximation(x, y, n)
 
 
