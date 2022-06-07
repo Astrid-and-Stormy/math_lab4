@@ -200,11 +200,19 @@ def approximation(x, y, n):
     pf = []
     try:
         la, lb = (lineal_approximation(x, y, n))
-        sa, sb, sc = (square_approximation(x, y, n))
-        ta, tb, tc, td = (triple_approximation(x, y, n))
     except:
         print("Че-то явно не то. Давай другие данные")
         return None
+    is_square = True
+    try:
+        sa, sb, sc = (square_approximation(x, y, n))
+    except:
+        is_square = False
+    is_triple = True
+    try:
+        ta, tb, tc, td = (triple_approximation(x, y, n))
+    except:
+        is_triple = False
     is_log = True
     lga, lgb = (logarithmic_approximation(x, y, n))
     if lga is None:
@@ -219,15 +227,21 @@ def approximation(x, y, n):
         is_pow = False
     for i in range(n):
         lf.append(lineal_function(x[i], la, lb))
-        sf.append(square_function(x[i], sa, sb, sc))
-        tf.append(triple_function(x[i], ta, tb, tc, td))
+        if is_square:
+            sf.append(square_function(x[i], sa, sb, sc))
+        if is_triple:
+            tf.append(triple_function(x[i], ta, tb, tc, td))
         if is_log:
             lgf.append(logarithmic_function(x[i], lga, lgb))
         if is_exp:
             ef.append(exponential_function(x[i], ea, eb))
         if is_pow:
             pf.append(power_function(x[i], pa, pb))
-    s_error = [found_square_error(lf, y, n), found_square_error(sf, y, n), found_square_error(tf, y, n)]
+    s_error = [found_square_error(lf, y, n)]
+    if is_square:
+        s_error.append(found_square_error(sf, y, n))
+    if is_triple:
+        s_error.append(found_square_error(tf, y, n))
     if is_log:
         s_error.append(found_square_error(lgf, y, n))
     if is_exp:
@@ -244,8 +258,10 @@ def approximation(x, y, n):
     plt.plot(x, y, 'o')
     x_nump = np.arange(x[0], x[-1], 0.01)
     plt.plot(x_nump, la * x_nump + lb)
-    plt.plot(x_nump, sa * x_nump ** 2 + sb * x_nump + sc)
-    plt.plot(x_nump, ta * x_nump ** 3 + tb * x_nump ** 2 + tc * x_nump + td)
+    if is_square:
+        plt.plot(x_nump, sa * x_nump ** 2 + sb * x_nump + sc)
+    if is_triple:
+        plt.plot(x_nump, ta * x_nump ** 3 + tb * x_nump ** 2 + tc * x_nump + td)
     if is_log:
         x_log = []
         for i in x_nump:
